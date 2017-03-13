@@ -1,10 +1,8 @@
 package rmi;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.rmi.Naming;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import bean.Dish;
@@ -13,50 +11,55 @@ import bean.User;
 import database.manager.DishGroupManager;
 import database.manager.DishManager;
 import database.manager.UserManager;
-import model.RestaurantInterface;
 
-public class Server extends UnicastRemoteObject implements RestaurantInterface {
-
-    private static final long serialVersionUID = 8547387726813420962L;
+public class Server implements ServerRMI {
 
     private UserManager userManager = new UserManager();
     private DishManager dishManager = new DishManager();
     private DishGroupManager dishGroupManager = new DishGroupManager();
-    
-    public Server() throws RemoteException {
-        
+
+    public Server() {
+
     }
 
-    @SuppressWarnings("deprecation")
-    public static void main(String args[]) throws IOException {
+    public static void main(String[] args) {
 
-        if (System.getSecurityManager() == null)
-            System.setSecurityManager(new RMISecurityManager());
+        int port = 1099;
+        if (args.length > 0) {
+            port = Integer.parseInt(args[0]);
+        }
+
+        Server si = new Server();
+        ServerRMI serveurRMI = null;
+
+        Registry registry = null;
 
         try {
-            InetAddress machine = InetAddress.getLocalHost();
-            String hostname = machine.getHostName();
-
-            if (hostname.indexOf(".") != -1)
-                hostname = hostname.substring(0, hostname.indexOf("."));
-
-            String service = "//" + hostname + ":" + args[0] + "/RestaurantRMI";
-
-            Server serv = new Server();
-            Naming.rebind(service, serv);
-
-            System.out.println("RestaurantRMI enregistre : " + service);
+            LocateRegistry.createRegistry(port);
+            registry = LocateRegistry.getRegistry(port);
         } catch (RemoteException e) {
-            System.out.println("RestaurantRMI err: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("Erreur registry " + e.getMessage());
         }
+
+        try {
+            serveurRMI = (ServerRMI) UnicastRemoteObject.exportObject(si, 0);
+        } catch (RemoteException e) {
+            System.out.println("Erreur exportObject " + e.getMessage());
+        }
+
+        try {
+            registry.rebind("monserveurrmi", serveurRMI);
+        } catch (RemoteException e) {
+            System.out.println("Erreur rebind " + e.getMessage());
+        }
+        System.out.println("Serveur RMI lancé");
     }
 
     @Override
     public User getUser(String username, String password) throws RemoteException {
         User user = userManager.findByUsername(username);
         if (user == null) return null;
-        if(!user.getPassword().equals(password)) return null;
+        if (!user.getPassword().equals(password)) return null;
         return user;
     }
 
@@ -64,12 +67,12 @@ public class Server extends UnicastRemoteObject implements RestaurantInterface {
     public List<Dish> getDishes() throws RemoteException {
         return dishManager.findAll();
     }
-    
+
     @Override
     public Dish getDish(String name) throws RemoteException {
         return dishManager.findOneByName(name);
     }
-    
+
     @Override
     public boolean createDish(Dish dish) throws RemoteException {
         return dishManager.create(dish);
@@ -89,7 +92,7 @@ public class Server extends UnicastRemoteObject implements RestaurantInterface {
     public List<DishGroup> getGroups() throws RemoteException {
         return dishGroupManager.findAll();
     }
-    
+
     @Override
     public DishGroup getGroup(String name) throws RemoteException {
         return dishGroupManager.findOneByName(name);

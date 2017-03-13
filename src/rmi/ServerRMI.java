@@ -1,4 +1,4 @@
-package model;
+package rmi;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -7,7 +7,7 @@ import bean.Dish;
 import bean.DishGroup;
 import bean.User;
 
-public interface RestaurantInterface extends Remote {
+public interface ServerRMI extends Remote {
     
     /* User */
     public User getUser(String username, String password) throws RemoteException;
