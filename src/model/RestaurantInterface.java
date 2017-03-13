@@ -2,16 +2,28 @@ package model;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
+import bean.Dish;
+import bean.DishGroup;
+import bean.User;
 
 public interface RestaurantInterface extends Remote {
     
     /* User */
-    public UserInterface getUser(String username, String password) throws RemoteException;
+    public User getUser(String username, String password) throws RemoteException;
     
     /* Dish CRUD */
-    public void createDish() throws RemoteException;
-    public void editDish() throws RemoteException;
-    
+    public List<Dish> getDishes() throws RemoteException;
+    public Dish getDish(String name) throws RemoteException;
+    public boolean createDish(Dish dish) throws RemoteException;
+    public boolean editDish(Dish dish) throws RemoteException;
+    public boolean deleteDish(Dish dish) throws RemoteException;
 
-    
+    /* DishGroup CRUD */
+    public List<DishGroup> getGroups() throws RemoteException;
+    public DishGroup getGroup(String name) throws RemoteException;
+    public boolean createGroup(DishGroup group) throws RemoteException;
+    public boolean editGroup(DishGroup group) throws RemoteException;
+    public boolean deleteGroup(DishGroup group) throws RemoteException;
+
 }

@@ -1,18 +1,22 @@
 package bean;
 
-import java.util.Set;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import database.annotation.Column;
 import database.annotation.Id;
+import database.annotation.Table;
 
-/**
- * 
- */
-public class DishGroup {
+@Table(name="dish_group")
+public class DishGroup implements Serializable {
 
+    private static final long serialVersionUID = 4930559450565766783L;
+    
     /**
      * Default constructor
      */
     public DishGroup() {
+        dishes = new ArrayList<Dish>();
     }
 
     @Id
@@ -22,19 +26,7 @@ public class DishGroup {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "parent_group")
-    private DishGroup parent;
-
-    public DishGroup getParent() {
-        return parent;
-    }
-
-    public void setParent(DishGroup parent) {
-        this.parent = parent;
-    }
-
-    private Set<Dish> dishes;
-    private Set<DishGroup> subGroups;
+    private List<Dish> dishes;
 
     public Integer getId() {
         return id;
@@ -52,7 +44,7 @@ public class DishGroup {
         this.name = name;
     }
 
-    public Set<Dish> getDishes() {
+    public List<Dish> getDishes() {
         return dishes;
     }
 
@@ -66,18 +58,8 @@ public class DishGroup {
         this.dishes.remove(dish);
     }
 
-    public Set<DishGroup> getSubGroups() {
-        return subGroups;
-    }
-
-    public void addSubGroup(DishGroup subGroup) {
-        subGroup.setParent(this);
-        this.subGroups.add(subGroup);
-    }
-
-    public void removeSubGroup(DishGroup subGroup) {
-        subGroup.setParent(null);
-        this.subGroups.remove(subGroup);
+    public void setDishes(List<Dish> dishes) {
+        this.dishes = dishes;
     }
 
 }

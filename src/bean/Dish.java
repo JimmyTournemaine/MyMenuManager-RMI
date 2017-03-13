@@ -2,15 +2,13 @@ package bean;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.sql.Blob;
 import database.annotation.Column;
 import database.annotation.Id;
 import database.annotation.Table;
-import model.DishInterface;
 
 @Table(name = "dish")
-public class Dish extends UnicastRemoteObject implements DishInterface, Serializable {
+public class Dish implements Serializable {
 
     private static final long serialVersionUID = -5887556494718198589L;
 
@@ -29,21 +27,32 @@ public class Dish extends UnicastRemoteObject implements DishInterface, Serializ
 
     @Column(name = "price")
     private Float price;
+
+    @Column(name = "dish_group_id")
+    private Integer groupId;
     
-    @Column(name="dish_group_id")
     private DishGroup group;
 
-    
+    public Dish() throws RemoteException {
+    }
+
+    public Integer getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Integer groupId) {
+        this.groupId = groupId;
+    }
+
     public DishGroup getGroup() {
         return group;
     }
 
-    
     public void setGroup(DishGroup group) {
         this.group = group;
-    }
-
-    public Dish() throws RemoteException {
+        if (group != null) {
+            this.groupId = group.getId();
+        }
     }
 
     public Integer getId() {
@@ -54,43 +63,35 @@ public class Dish extends UnicastRemoteObject implements DishInterface, Serializ
         this.id = id;
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public void setName(String name) {
         this.name = name;
     }
 
-    @Override
     public String getDescription() {
         return description;
     }
 
-    @Override
     public void setDescription(String description) {
         this.description = description;
     }
 
-    @Override
     public Blob getImage() {
         return image;
     }
 
-    @Override
     public void setImage(Blob image) {
         this.image = image;
     }
 
-    @Override
     public void setPrice(Float price) {
         this.price = price;
 
     }
 
-    @Override
     public float getPrice() {
         return price;
     }
