@@ -95,6 +95,11 @@ public class Server implements ServerRMI {
     }
 
     @Override
+    public DishGroup getGroup(int id) throws RemoteException {
+        return dishGroupManager.find(id);
+    }
+
+    @Override
     public DishGroup getGroup(String name) throws RemoteException {
         return dishGroupManager.findOneByName(name);
     }

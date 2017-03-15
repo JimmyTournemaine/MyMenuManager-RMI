@@ -22,6 +22,7 @@ public interface ServerRMI extends Remote {
 
     /* DishGroup CRUD */
     public List<DishGroup> getGroups() throws RemoteException;
+    public DishGroup getGroup(int id) throws RemoteException;
     public DishGroup getGroup(String name) throws RemoteException;
     public boolean createGroup(DishGroup group) throws RemoteException;
     public boolean editGroup(DishGroup group) throws RemoteException;
