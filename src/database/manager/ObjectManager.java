@@ -139,6 +139,7 @@ public class ObjectManager<T> {
     }
 
     public boolean create(T entity) {
+        if(entity == null) return false;
         try {
             Set<String> properties = columnNames.keySet();
             String columnNames[] = new String[properties.size() - 1]; // -1 to remove @Id
@@ -173,6 +174,7 @@ public class ObjectManager<T> {
     }
 
     public boolean update(T entity) {
+        if(entity == null) return false;
         try {
             Set<String> properties = columnNames.keySet();
             String sql[] = new String[properties.size() - 1]; // -1 to remove @Id
@@ -194,8 +196,13 @@ public class ObjectManager<T> {
             for (i = 1; i <= values.length; i++) {
                 ps.setObject(i, values[i - 1]);
             }
-            ps.setInt(values.length + 1,
-                    (int) c.getMethod(getterOf(c.getDeclaredField("id"))).invoke(entity));
+            
+            Field idF = c.getDeclaredField("id");
+            String mName = getterOf(idF);
+            Method m = c.getMethod(mName);
+            Object o = m.invoke(entity);
+            ps.setObject(values.length + 1, o);
+            System.out.println("ObjectManager.update() > "+ps);
             ps.executeUpdate();
             ps.close();
 
@@ -207,6 +214,7 @@ public class ObjectManager<T> {
     }
 
     public boolean delete(T entity) {
+        if(entity == null) return false;
         try {
             String sql = "DELETE FROM `" + tableName + "` WHERE id=?";
 

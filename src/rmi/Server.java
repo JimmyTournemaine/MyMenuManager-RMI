@@ -14,6 +14,7 @@ import database.manager.UserManager;
 
 public class Server implements ServerRMI {
 
+    private static int PORT = 1099;
     private UserManager userManager = new UserManager();
     private DishManager dishManager = new DishManager();
     private DishGroupManager dishGroupManager = new DishGroupManager();
@@ -24,35 +25,30 @@ public class Server implements ServerRMI {
 
     public static void main(String[] args) {
 
-        int port = 1099;
-        if (args.length > 0) {
-            port = Integer.parseInt(args[0]);
-        }
-
         Server si = new Server();
         ServerRMI serveurRMI = null;
 
         Registry registry = null;
 
         try {
-            LocateRegistry.createRegistry(port);
-            registry = LocateRegistry.getRegistry(port);
+            LocateRegistry.createRegistry(PORT);
+            registry = LocateRegistry.getRegistry(PORT);
         } catch (RemoteException e) {
-            System.out.println("Erreur registry " + e.getMessage());
+            System.out.println("Registry error : " + e.getMessage());
         }
 
         try {
             serveurRMI = (ServerRMI) UnicastRemoteObject.exportObject(si, 0);
         } catch (RemoteException e) {
-            System.out.println("Erreur exportObject " + e.getMessage());
+            System.out.println("ExportObject error : " + e.getMessage());
         }
 
         try {
             registry.rebind("monserveurrmi", serveurRMI);
         } catch (RemoteException e) {
-            System.out.println("Erreur rebind " + e.getMessage());
+            System.out.println("Rebind error " + e.getMessage());
         }
-        System.out.println("Serveur RMI lancé");
+        System.out.println("RMI Server RMI is running...");
     }
 
     @Override
@@ -69,6 +65,11 @@ public class Server implements ServerRMI {
     }
 
     @Override
+    public Dish getDish(int id) throws RemoteException {
+        return dishManager.find(id);
+    }
+
+    @Override
     public Dish getDish(String name) throws RemoteException {
         return dishManager.findOneByName(name);
     }
@@ -79,8 +80,8 @@ public class Server implements ServerRMI {
     }
 
     @Override
-    public boolean editDish(Dish result) throws RemoteException {
-        return dishManager.update(result);
+    public boolean editDish(Dish dish) throws RemoteException {
+        return dishManager.update(dish);
     }
 
     @Override

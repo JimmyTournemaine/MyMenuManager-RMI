@@ -55,6 +55,12 @@ public class ServerTest {
         /* Delete */
         assertTrue(server.deleteDish(updated));
         assertNull(server.getDish(updated.getName()));
+        
+        /* Try to break the code */
+        assertNull(server.getDish(0));
+        assertFalse(server.createDish(null));
+        assertFalse(server.editDish(null));
+        assertFalse(server.deleteDish(null));
     }
 
     @Test

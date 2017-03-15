@@ -26,7 +26,7 @@ public class Dish implements Serializable {
     private Blob image;
 
     @Column(name = "price")
-    private Float price;
+    private float price;
 
     @Column(name = "dish_group_id")
     private Integer groupId;
@@ -87,7 +87,7 @@ public class Dish implements Serializable {
         this.image = image;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(float price) {
         this.price = price;
 
     }
