@@ -65,6 +65,11 @@ public class Server implements ServerRMI {
     }
 
     @Override
+    public List<Dish> getUngroupedDishes() throws RemoteException {
+        return dishManager.findBy("group", null);
+    }
+
+    @Override
     public Dish getDish(int id) throws RemoteException {
         return dishManager.find(id);
     }

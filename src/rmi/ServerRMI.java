@@ -14,6 +14,7 @@ public interface ServerRMI extends Remote {
     
     /* Dish CRUD */
     public List<Dish> getDishes() throws RemoteException;
+    public List<Dish> getUngroupedDishes() throws RemoteException;
     public Dish getDish(int id) throws RemoteException;
     public Dish getDish(String name) throws RemoteException;
     public boolean createDish(Dish dish) throws RemoteException;
