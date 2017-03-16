@@ -52,6 +52,8 @@ public class Dish implements Serializable {
         this.group = group;
         if (group != null) {
             this.groupId = group.getId();
+        } else {
+            this.groupId = null;
         }
     }
 

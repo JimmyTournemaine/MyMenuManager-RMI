@@ -107,10 +107,11 @@ public class ObjectManager<T> {
     public List<T> findBy(String prop, Object value) {
         List<T> entities = new ArrayList<T>();
         try {
-            String sql = "SELECT * FROM `" + tableName + "` WHERE " + columnNames.get(prop)
-                    + " = ?";
+            String sql = "SELECT * FROM `" + tableName + "` WHERE " + columnNames.get(prop);
+            sql += (value == null) ? " IS NULL" : " = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setObject(1, value);
+            if(value != null) ps.setObject(1, value);
+            System.out.println("ObjectManager.findBy() > "+ps);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 T entity = (T) c.newInstance();

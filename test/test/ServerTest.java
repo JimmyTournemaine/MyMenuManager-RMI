@@ -1,7 +1,12 @@
 package test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.rmi.RemoteException;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import bean.Dish;
@@ -51,6 +56,10 @@ public class ServerTest {
         assertTrue(server.editDish(result));
         updated = server.getDish(result.getName());
         assertTrue(result.getPrice() == updated.getPrice());
+        
+        /* Get dishes without group */
+        List<Dish> dishes = server.getUngroupedDishes();
+        System.out.println(dishes.size());
 
         /* Delete */
         assertTrue(server.deleteDish(updated));
