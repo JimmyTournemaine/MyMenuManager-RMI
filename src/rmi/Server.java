@@ -56,6 +56,8 @@ public class Server implements ServerRMI {
         User user = userManager.findByUsername(username);
         if (user == null) return null;
         if (!user.getPassword().equals(password)) return null;
+        user.setLastLoginToNow();
+        userManager.update(user);
         return user;
     }
 

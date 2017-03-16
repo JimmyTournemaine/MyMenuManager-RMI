@@ -1,33 +1,29 @@
+--
+-- Create tables
+--
 CREATE TABLE IF NOT EXISTS `dish` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(255) NOT NULL,
-  `description` text NOT NULL,
+  `description` text,
   `price` float NOT NULL,
   `image` blob,
   `dish_group_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
-
-ALTER TABLE `dish`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `name` (`name`);
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `dish_group` (
-`id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `parent_group` int(11) DEFAULT NULL
-)
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `user` (
+  `username` varchar(255) NOT NULL PRIMARY KEY,
+  `password` varchar(255) NOT NULL,
+  `last_login` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `dish`
+  ADD UNIQUE KEY `name` (`name`), 
+  ADD CONSTRAINT `fk_dish_group` FOREIGN KEY (`dish_group_id`) REFERENCES `dish_group` (`id`);
 
 ALTER TABLE `dish_group`
- ADD PRIMARY KEY (`id`);
-ENT pour la table `dish`
---
-ALTER TABLE `dish`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10;
---
--- AUTO_INCREMENT pour la table `dish_group`
---
-ALTER TABLE `dish_group`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+  ADD UNIQUE KEY `name` (`name`);

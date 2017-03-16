@@ -180,7 +180,7 @@ public class ObjectManager<T> {
             Set<String> properties = columnNames.keySet();
             String sql[] = new String[properties.size() - 1]; // -1 to remove @Id
             Object values[] = new Object[properties.size() - 1]; // -1 to remove @Id
-
+            String idField = "id", idColumn = "id";
             int i = 0;
             for (Field f : c.getDeclaredFields()) {
                 if (f.getAnnotation(Id.class) == null && f.getAnnotation(Column.class) != null) {
@@ -188,17 +188,20 @@ public class ObjectManager<T> {
                     values[i] = getter.invoke(entity);
                     sql[i] = f.getAnnotation(Column.class).name() + " = ?";
                     i++;
+                } else if(f.getAnnotation(Id.class) != null) {
+                    idField = f.getName();
+                    idColumn = f.getAnnotation(Column.class).name();
                 }
             }
 
             String query = "UPDATE `" + tableName + "` SET " + String.join(",", sql)
-                    + " WHERE id = ?";
+                    + " WHERE "+idColumn+" = ?";
             PreparedStatement ps = conn.prepareStatement(query);
             for (i = 1; i <= values.length; i++) {
                 ps.setObject(i, values[i - 1]);
             }
             
-            Field idF = c.getDeclaredField("id");
+            Field idF = c.getDeclaredField(idField);
             String mName = getterOf(idF);
             Method m = c.getMethod(mName);
             Object o = m.invoke(entity);
