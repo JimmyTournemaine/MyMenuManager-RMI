@@ -35,18 +35,21 @@ public class Server implements ServerRMI {
             registry = LocateRegistry.getRegistry(PORT);
         } catch (RemoteException e) {
             System.out.println("Registry error : " + e.getMessage());
+            System.exit(1);
         }
 
         try {
             serveurRMI = (ServerRMI) UnicastRemoteObject.exportObject(si, 0);
         } catch (RemoteException e) {
             System.out.println("ExportObject error : " + e.getMessage());
+            System.exit(2);
         }
 
         try {
             registry.rebind("monserveurrmi", serveurRMI);
         } catch (RemoteException e) {
             System.out.println("Rebind error " + e.getMessage());
+            System.exit(3);
         }
         System.out.println("RMI Server RMI is running...");
     }
